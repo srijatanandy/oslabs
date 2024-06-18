@@ -63,33 +63,39 @@ int main(int argc, char* argv[]) {
        //do whatever you want with the commands, here we just print them
 
 		for(i=0;tokens[i]!=NULL;i++){
-			lastIndex = i;
 			printf("found token %s (remove this debug output later)\n", tokens[i]);
 		}
 
 
 
+  //MYCODEHERE -----
+		int i;
+		int bg =0;
+    for (i = 0; tokens[i] != NULL; i++) {
+      if (strcmp(tokens[i], "&") == 0) {
+        bg = 1;
+        tokens[i] = NULL;  // Remove "&" token
+        break;  // No need to check further
+      }
+    }
 
-		//MYCODEHERE -----
-
-		int r=fork();
-		  if (r==0){
-		  	if(strcmp(tokens[-1],"&")==0){
-		  		tokens[-1]='\0';
-		  		execvp(tokens[0],tokens);
-		  		waitpid(pid, NULL, 0);
-		  		exit(1);
-
-		  	}
-			 execvp(tokens[0],tokens);
-			 exit(1);
-		  }
-		  else{
-			 wait(NULL);
-		  }
-		
-
-
+    int r = fork(); 
+        if (r == 0) {
+            // Child process
+            execvp(tokens[0], tokens);
+            exit(1);  // Exit child process if execvp fails
+        } 
+        else {
+            // Parent process
+            if (bg == 0) {
+                // Wait for foreground process to complete
+                waitpid(r, NULL, 0);
+            } else {
+                // Background process
+                printf("Process running in background with PID: %d\n", r);
+            }
+        }
+		  
 		// Freeing the allocated memory	
 		for (i=0;tokens[i]!= NULL;i++){
 			free(tokens[i]);

@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
 		
 		if(strcmp(tokens[0],"cd")==0){
 			if (tokens[1] == NULL){
-        fprintf(stderr, "Shell: Incorrect command\n");
+        printf(stderr, "Shell: Incorrect command\n");
       } 
       else{
         chdir(tokens[1]);
